@@ -4,7 +4,7 @@ import os
 from uuid import uuid4
 from PIL import Image
 from PIL import ImageFont
-from PIL import ImageDraw 
+from PIL import ImageDraw
 import contributions.git as git
 import contributions.config as config
 
@@ -14,7 +14,6 @@ FONTS = ['arial', 'KeepCalm-Medium']
 
 def argparser():
     epilog = '''Credits Hervé Beraud'''
-
     parser = argparse.ArgumentParser(
         description='Generate the most coolest github/gitlab timelines',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -23,11 +22,13 @@ def argparser():
                         help="the text to display")
     parser.add_argument('project', type=str,
                         help="the fake project to commit to")
-    parser.add_argument('token', type=str,
-                        help="the github/gitlab token to commit to")
-    parser.add_argument('username', type=str,
+    parser.add_argument('user', type=str,
+                        help="the github/gitlab username to authenticate to")
+    parser.add_argument('password', type=str,
+                        help="the github/gitlab password to authenticate to")
+    parser.add_argument('gitname', type=str,
                         help="the username to commit to")
-    parser.add_argument('email', type=str,
+    parser.add_argument('gitemail', type=str,
                         help="the user email to commit to")
     parser.add_argument('-f', '--font', type=str,
                         choices=[key for key in FONTS],
@@ -50,8 +51,8 @@ def argparser():
 
 def generate_text(text, font, pixel_char, space_char, left_space, top_space):
     image = '/tmp/image.jpg'
-    matrice = (0.33,0.33,.33,0,.33,.33,.33,0,.33,.33,.33,0)
-    img = Image.new("RGB", (52, 7), color=(255,255,255))
+    matrice = (0.33, 0.33, 33, 0, 33, 33, 33, 0, 33, 33, 33, 0)
+    img = Image.new("RGB", (52, 7), color=(255, 255, 255))
     draw = ImageDraw.Draw(img)
     print("{}/{}.py".format(config.FONTS_PATH, font))
     font = ImageFont.truetype("{}/{}.py".format(config.FONTS_PATH, font), 8)
@@ -61,7 +62,7 @@ def generate_text(text, font, pixel_char, space_char, left_space, top_space):
     pixels = list(img.getdata())
     width, height = img.size
     pixels = [pixels[i * width:(i + 1) * width] for i in range(height)]
-    
+
     matrix = []
     for line in pixels:
         matrix_line = []
@@ -74,15 +75,18 @@ def generate_text(text, font, pixel_char, space_char, left_space, top_space):
     return matrix
 
 
-def make_timeline(timeline, pixel, project, token, username, email):
+def make_timeline(timeline, pixel, project, github_user, github_pass,
+                  gitname, email):
     identifier = str(uuid4())
     print("Project identifier: {}".format(identifier))
     git.clone(project, identifier)
     os.chdir('/tmp/{}'.format(identifier))
-    git.config(username, email)
-    git.create_empty_branch()
+    git.config(gitname, email)
+    default_branch = git.create_empty_branch()
     git.brand()
     git.commits(timeline, pixel)
+    git.restor_default_branch(default_branch)
+    git.push(github_user, github_pass, project)
 
 
 def main():
@@ -96,8 +100,8 @@ def main():
         args.top_space)
     for line in matrix:
         print("".join(line))
-    make_timeline(matrix, args.pixel, args.project, args.token, args.username,
-            args.email)
+    make_timeline(matrix, args.pixel, args.project, args.user,
+                  args.password, args.gitname, args.gitemail)
 
 
 if __name__ == "__main__":

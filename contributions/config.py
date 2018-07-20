@@ -8,11 +8,11 @@ if PATH:
     FONTS_PATH = os.path.join(BASE_DIR, "contributions", "fonts")
 
 WEEKDAY = {
-    0: 7,
-    1: 6,
-    2: 5,
-    3: 4,
-    4: 3,
-    5: 2,
-    6: 1
+    0: 9,
+    1: 8,
+    2: 7,
+    3: 6,
+    4: 5,
+    5: 4,
+    6: 3
 }
