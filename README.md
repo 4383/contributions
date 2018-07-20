@@ -1,5 +1,5 @@
 # Contributions
-A tool for generate personalize github timelines with text :)
+Generate personalized github timelines from input text
 
 ## Usage
 ```shell

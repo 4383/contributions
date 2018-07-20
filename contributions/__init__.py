@@ -46,6 +46,9 @@ def argparser():
     parser.add_argument('-t', '--top-space', type=int,
                         default=0,
                         help="space at top")
+    parser.add_argument('--simulate', action='store_true',
+                        default=False,
+                        help="simulat display")
     return parser.parse_args()
 
 
@@ -100,6 +103,8 @@ def main():
         args.top_space)
     for line in matrix:
         print("".join(line))
+    if args.simulate:
+        return
     make_timeline(matrix, args.pixel, args.project, args.user,
                   args.password, args.gitname, args.gitemail)
 
