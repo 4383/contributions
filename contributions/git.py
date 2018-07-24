@@ -42,12 +42,26 @@ def config(username, email):
 
 def brand():
     with open('README.md', 'w+') as readme:
-        readme.write("# BADASS\n")
-        readme.write("generated at {} with badass-contributions\n\n".format(
-            datetime.datetime.now().strftime("%c")))
+        readme.write("# Hey you!")
         readme.write(textwrap.dedent("""
+            This fake project allow
+            [contributions](https://github.com/4383/contributions)
+            to generate my personal timeline
+            """))
+        readme.write(textwrap.dedent("""
+            Create your fake repo and get your own :
+            ```shell
+            $ pip install -U contributions
+            $ contributions --help
+            ```
+            """.format(datetime.datetime.now().strftime("%c"))))
+        readme.write(textwrap.dedent(
+            """
             Get your
-            [BADASS timeline](https://github.com/4383/contributions)"""))
+            [BADASS timeline](https://github.com/4383/contributions)\n
+            """))
+        readme.write("generated at {} with badass-contributions".format(
+            datetime.datetime.now().strftime("%c")))
     cmd = ['git', 'add', 'README.md']
     ok, output, err = utils.execute(cmd)
     if not ok:
