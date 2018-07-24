@@ -13,7 +13,7 @@ FONTS = ['arial', 'KeepCalm-Medium']
 
 
 def argparser():
-    epilog = '''Credits Hervé Beraud'''
+    epilog = '''Credits Hervé Beraud (4383)'''
     parser = argparse.ArgumentParser(
         description='Generate the most coolest github/gitlab timelines',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -49,6 +49,9 @@ def argparser():
     parser.add_argument('--simulate', action='store_true',
                         default=False,
                         help="simulat display")
+    parser.add_argument('--no-push', action='store_true',
+                        default=False,
+                        help="run without push to repo")
     return parser.parse_args()
 
 
@@ -79,7 +82,7 @@ def generate_text(text, font, pixel_char, space_char, left_space, top_space):
 
 
 def make_timeline(timeline, pixel, project, github_user, github_pass,
-                  gitname, email):
+                  gitname, email, no_push):
     identifier = str(uuid4())
     print("Project identifier: {}".format(identifier))
     git.clone(project, identifier)
@@ -89,6 +92,8 @@ def make_timeline(timeline, pixel, project, github_user, github_pass,
     git.brand()
     git.commits(timeline, pixel)
     git.restor_default_branch(default_branch)
+    if no_push:
+        return
     git.push(github_user, github_pass, project)
 
 
@@ -106,7 +111,7 @@ def main():
     if args.simulate:
         return
     make_timeline(matrix, args.pixel, args.project, args.user,
-                  args.password, args.gitname, args.gitemail)
+                  args.password, args.gitname, args.gitemail, args.no_push)
 
 
 if __name__ == "__main__":
